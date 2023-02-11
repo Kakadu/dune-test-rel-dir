@@ -1,0 +1,38 @@
+(executable
+ (name rewriter1)
+ (modules rewriter1)
+ (flags
+  (:standard -linkall))
+ (libraries ppxlib.runner))
+
+(cram
+ (deps ./rewriter1.exe))
+
+(library
+ (name lib1)
+ (package InnerProject)
+ (modules lib1)
+ (preprocessor_deps
+  %{project_root}/dir/delta-path.cfg
+  %{project_root}/dir/rewriter1.exe
+  ;
+  )
+ (preprocess
+  (pps ppx_inline_test -- -pp ./dir/rewriter1.exe)
+  ; works in inner, but doesn't when vendored
+  ;(pps ppx_inline_test -- -pp inner/dir/rewriter1.exe)
+  ; works from top project but doesn't if inner is not vendored (obviously)
+  ;(pps ppx_inline_test -- -pp %{project_root}/dir/rewriter1.exe)
+  ; works from top project but doesn't if inner is not vendored
+  )
+ (inline_tests))
+
+(rule
+ (targets delta-path.cfg)
+ (action
+  (run ./discover.exe %{project_root} %{workspace_root})))
+
+(executable
+ (name discover)
+ (modules Discover)
+ (libraries unix stdio))
