@@ -18,8 +18,10 @@
   ;
   )
  (preprocess
+  ;(pps ppx_inline_test -- -pp %{read:delta-path.cfg}/dir/rewriter1.exe)
+  ; works
   (pps ppx_inline_test -- -pp ./dir/rewriter1.exe)
-  ; works in inner, but doesn't when vendored
+  ; works in inner, but doesn't when it is vendored
   ;(pps ppx_inline_test -- -pp inner/dir/rewriter1.exe)
   ; works from top project but doesn't if inner is not vendored (obviously)
   ;(pps ppx_inline_test -- -pp %{project_root}/dir/rewriter1.exe)
